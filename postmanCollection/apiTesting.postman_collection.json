@@ -1,0 +1,389 @@
+{
+	"info": {
+		"_postman_id": "5718e244-6440-47c6-9cd8-cfc70196531b",
+		"name": "API Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseSchema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"token\": { \"type\": \"string\" }",
+							"    },",
+							"    \"required\": [\"token\"]",
+							"};",
+							"",
+							"pm.test(\"Verify status code is 200.\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Verify response body has correct schema.\", function () {",
+							"    pm.response.to.have.jsonSchema(responseSchema);",
+							"});",
+							"",
+							"pm.environment.set(\"token\", pm.response.json().token);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"eve.holt@reqres.in\",\n    \"password\": \"cityslicka\"\n}",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/login",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const expectedObject = JSON.parse(pm.request.body.raw);",
+							"",
+							"pm.test(`Verify status code is ${pm.environment.get(\"statusCode\")}`, function () {",
+							"    pm.response.to.have.status(pm.environment.get(\"statusCode\"));",
+							"});",
+							"",
+							"pm.test(\"Verify correct user infos is created.\", function () {",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);",
+							"})",
+							"",
+							"pm.environment.set(\"userId\", pm.response.json().id);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let requestBody = {\r",
+							"    \"name\": pm.environment.get('name'),\r",
+							"    \"job\": pm.environment.get('job')\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"requestBody\", JSON.stringify(requestBody));\r",
+							"pm.environment.set(\"statusCode\", pm.environment.get('createUserStatusCode'),);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=utf-8",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{requestBody}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/users",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const expectedObject = JSON.parse(pm.request.body.raw);",
+							"",
+							"pm.test(`Verify status code is ${pm.environment.get(\"statusCode\")}`, function () {",
+							"    pm.response.to.have.status(pm.environment.get(\"statusCode\"));",
+							"});",
+							"",
+							"pm.test(\"Verify user infos is updated as expectation.\", function () {",
+							"    pm.expect(pm.response.json()).to.deep.include(expectedObject);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let requestBody = {\r",
+							"    \"name\": pm.environment.get('updateName'),\r",
+							"    \"job\": pm.environment.get('updateJob')\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"requestBody\", JSON.stringify(requestBody));\r",
+							"pm.environment.set(\"statusCode\", pm.environment.get('updateUserStatusCode'),);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=utf-8",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{requestBody}}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/api/users/{{userId}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(`Verify status code is ${pm.environment.get(\"statusCode\")}`, function () {",
+							"    pm.response.to.have.status(pm.environment.get(\"statusCode\"));",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"statusCode\", pm.environment.get('deleteUserStatusCode'),);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/users/{{userId}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let statusCode = pm.environment.get(\"statusCode\");",
+							"",
+							"pm.test(`Verify status code is ${statusCode}`, function () {",
+							"    pm.response.to.have.status(statusCode);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"statusCode\", pm.environment.get('getUserStatusCode'),);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/api/users/{{userId}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"postman.setNextRequest(getNextRequest());",
+					"",
+					"function getNextRequest() {",
+					"    let requests;",
+					"    let dataset;",
+					"    let nextDataset;",
+					"    let nextRequest;",
+					"",
+					"    if(Array.isArray(pm.globals.get(\"remainingDataset\")) === true ){",
+					"        dataset = pm.globals.get(\"remainingDataset\");",
+					"    } else {",
+					"        dataset = pm.iterationData.get(\"dataset\");",
+					"        if (dataset === undefined)",
+					"            pm.globals.set(\"remainingDataset\", []);",
+					"    }",
+					"",
+					"    let remainingRequests = pm.globals.get(\"remainingRequests\");",
+					"    if(Array.isArray(remainingRequests) === true ){",
+					"        requests = pm.globals.get(\"remainingRequests\");",
+					"    } else {",
+					"        requests = pm.iterationData.get(\"requests\");    ",
+					"    }",
+					"",
+					"    if(dataset && dataset.length > 0 && (remainingRequests === undefined || remainingRequests.length ===0)) {",
+					"        nextDataset = dataset.shift();",
+					"        pm.globals.set(\"remainingDataset\", dataset);",
+					"        for (const [key, value] of Object.entries(nextDataset)) {",
+					"            pm.environment.set(key, value);",
+					"        }",
+					"        requests = pm.iterationData.get(\"requests\");",
+					"    }",
+					"",
+					"    nextRequest = requests.shift();",
+					"    pm.globals.set(\"remainingRequests\", requests);",
+					"",
+					"    if(nextRequest === undefined && nextDataset === undefined){",
+					"        pm.globals.clear(\"remainingRequests\");",
+					"        pm.globals.clear(\"remainingDataset\");",
+					"        return null;",
+					"    }",
+					"",
+					"    return nextRequest;",
+					"}"
+				]
+			}
+		}
+	]
+}

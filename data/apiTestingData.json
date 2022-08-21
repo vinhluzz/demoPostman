@@ -1,0 +1,123 @@
+[
+   {
+      "requests": [
+         "Create User"
+      ],
+      "dataset": [
+         {
+            "name": "morpheus1",
+            "job": "leader1",
+            "createUserStatusCode": 201
+         },
+         {
+            "name": 12,
+            "job": 25,
+            "createUserStatusCode": 201
+         },
+         {
+            "name": null,
+            "job": null,
+            "createUserStatusCode": 201
+         }
+      ]
+   },
+   {
+      "requests": [
+         "Update User"
+      ],
+      "dataset": [
+         {
+            "userId": 2,
+            "updateName": "morpheus1",
+            "updateJob": "leader1",
+            "updateUserStatusCode": 200
+         },
+         {
+            "userId": "",
+            "updateName": 12,
+            "updateJob": 25,
+            "updateUserStatusCode": 404
+         },
+         {
+            "userId": 2,
+            "updateName": null,
+            "updateJob": null,
+            "updateUserStatusCode": 200
+         }
+      ]
+   },
+   {
+      "requests": [
+         "Delete User"
+      ],
+      "dataset": [
+         {
+            "userId": 2,
+            "deleteUserStatusCode": 204
+         },
+         {
+            "userId": "",
+            "deleteUserStatusCode": 404
+         },
+         {
+            "userId": 23,
+            "deleteUserStatusCode": 404
+         }
+      ]
+   },
+   {
+      "requests": [
+         "Get User"
+      ],
+      "dataset": [
+         {
+            "userId": 3,
+            "getUserStatusCode": 200
+         },
+         {
+            "userId": 23,
+            "getUserStatusCode": 404
+         },
+         {
+            "userId": null,
+            "getUserStatusCode": 404
+         }
+      ]
+   },
+   {
+      "requests": [
+         "Create User",
+         "Delete User",
+         "Get User"
+      ],
+      "dataset": [
+         {
+            "name": "morpheus1",
+            "job": "leader1",
+            "createUserStatusCode": 201,
+            "deleteUserStatusCode": 204,
+            "getUserStatusCode": 404
+         }
+      ]
+   },
+   {
+      "requests": [
+         "Create User",
+         "Update User",
+         "Delete User",
+         "Get User"
+      ],
+      "dataset": [
+         {
+            "name": "morpheus",
+            "job": "leader",
+            "createUserStatusCode": 201,
+            "updateName": "morpheus2",
+            "updateJob": "leader2",
+            "updateUserStatusCode": 200,
+            "deleteUserStatusCode": 204,
+            "getUserStatusCode": 404
+         }
+      ]
+   }
+]
